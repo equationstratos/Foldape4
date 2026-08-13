@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foldape4 — DarwinFPV · modèle 3D</title>
+<style>
+  :root { --bg: #0a0e14; --fg: #e9eef5; --accent: #f5a623; --panel: #121820; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 12px 20px; border-bottom: 1px solid #1e2630; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  h1 { font-size: 1.25rem; font-weight: 600; }
+  h1 small { font-weight: 400; opacity: 0.7; }
+  .btn { background: #1a2330; border: 1px solid #2a3545; color: var(--fg); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+  .btn:hover { background: #243044; }
+  .btn.primary { background: var(--accent); color: #111; border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover { filter: brightness(1.1); }
+  main { flex: 1; display: flex; overflow: hidden; }
+  #sidebar { width: 280px; background: var(--panel); border-right: 1px solid #1e2630; padding: 16px; overflow-y: auto; }
+  #viewport { flex: 1; position: relative; }
+  canvas { display: block; width: 100%; height: 100%; }
+  .tip { position: absolute; bottom: 12px; left: 12px; font-size: 0.8rem; opacity: 0.6; }
+  ul { list-style: none; }
+  li { padding: 6px 0; border-bottom: 1px solid #1e2630; font-size: 0.9rem; }
+  .hint { font-size: 0.8rem; opacity: 0.7; margin-top: 12px; line-height: 1.4; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Foldape4 <small>— DarwinFPV foldable frame</small></h1>
+  <button class="btn primary" id="btn-model">modèle Foldape4</button>
+  <button class="btn" id="btn-fold">Voir plié / déplié</button>
+  <button class="btn" id="btn-reset">Reset vue</button>
+  <a class="btn" href="https://github.com/equationstratos/Foldape4" target="_blank">Repo</a>
+  <a class="btn" href="https://darwinfpv.com/products/darwinfpv-foldape4-frame" target="_blank">Produit</a>
+</header>
+<main>
+  <aside id="sidebar">
+    <h2 style="font-size:1rem;margin-bottom:12px;">Pièces</h2>
+    <ul id="part-list">
+      <li>Cadre carbone (propriétaire)</li>
+      <li>O3 Camera mount L/R (STL officiel)</li>
+      <li>Antenne mounts (STL officiel)</li>
+      <li>GoPro mounts (STL officiel)</li>
+      <li>Feet / Landing gear (community)</li>
+      <li>GPS mounts (community)</li>
+    </ul>
+    <p class="hint">
+      Le cadre principal n'est pas open-source.<br>
+      Utilise le tracé photo (style OA35) pour reconstruire les plaques à partir de photos de dessus.<br><br>
+      <strong>Mécanisme de pliage :</strong> bras pliables, verrouillage par 2 vis après déploiement. Volume réduit ~70 %.
+    </p>
+  </aside>
+  <div id="viewport">
+    <div class="tip">Clic gauche : orbite · molette : zoom · clic droit : déplacer</div>
+  </div>
+</main>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e14);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 2000);
+camera.position.set(120, 80, 120);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.getElementById('viewport').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+const light = new THREE.DirectionalLight(0xffffff, 1.2);
+light.position.set(50, 100, 50);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404860, 0.6));
+scene.add(new THREE.GridHelper(200, 20, 0x1e2630, 0x151c26));
+
+// Placeholder geometry representing the Foldape4 frame (simplified X frame)
+function createPlaceholderFrame(folded = false) {
+  const group = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.3, roughness: 0.4 });
+  const yellow = new THREE.MeshStandardMaterial({ color: 0xf5a623, metalness: 0.1, roughness: 0.6 });
+
+  // Center body
+  const body = new THREE.Mesh(new THREE.BoxGeometry(40, 4, 40), mat);
+  group.add(body);
+
+  // Arms (simplified)
+  const armLen = folded ? 35 : 70;
+  const armGeo = new THREE.BoxGeometry(8, 3, armLen);
+  const positions = [
+    [25, 0, 25], [25, 0, -25], [-25, 0, 25], [-25, 0, -25]
+  ];
+  positions.forEach(([x, y, z], i) => {
+    const arm = new THREE.Mesh(armGeo, mat);
+    arm.position.set(x * (folded ? 0.6 : 1), y, z * (folded ? 0.6 : 1));
+    if (folded) {
+      arm.rotation.y = (i % 2 === 0 ? 1 : -1) * Math.PI / 4;
+    } else {
+      arm.rotation.y = Math.atan2(z, x);
+    }
+    group.add(arm);
+  });
+
+  // Yellow motor mounts / tips
+  positions.forEach(([x, y, z]) => {
+    const tip = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 5, 16), yellow);
+    tip.rotation.x = Math.PI / 2;
+    tip.position.set(x * (folded ? 0.7 : 1.15), 0, z * (folded ? 0.7 : 1.15));
+    group.add(tip);
+  });
+
+  return group;
+}
+
+let currentFrame = createPlaceholderFrame(false);
+scene.add(currentFrame);
+let folded = false;
+
+function resize() {
+  const vp = document.getElementById('viewport');
+  const w = vp.clientWidth, h = vp.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', resize);
+resize();
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+document.getElementById('btn-model').addEventListener('click', () => {
+  // Future: load real STLs
+  alert('Chargement du modèle Foldape4 (placeholder actuel).\nLes STL officiels camera mounts seront intégrés prochainement.\nUtilise le tracé photo style OA35 pour reconstruire les plaques carbone.');
+});
+
+document.getElementById('btn-fold').addEventListener('click', () => {
+  scene.remove(currentFrame);
+  folded = !folded;
+  currentFrame = createPlaceholderFrame(folded);
+  scene.add(currentFrame);
+  document.getElementById('btn-fold').textContent = folded ? 'Voir déplié' : 'Voir plié / déplié';
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  camera.position.set(120, 80, 120);
+  controls.target.set(0, 0, 0);
+  controls.update();
+});
+</script>
+</body>
+</html>
