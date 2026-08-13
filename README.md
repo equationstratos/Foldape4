@@ -2,43 +2,37 @@
 
 Repository for the **DarwinFPV FoldApe4** — 4" foldable micro long-range FPV drone frame.
 
-Inspired by the interactive build visualizer style of [OA35 / TinyHoop MK1](https://equationstratos.github.io/OA35/).
+**Live viewer (placeholder)**: https://equationstratos.github.io/Foldape4/  (enable Pages if not yet)
 
-## Goal
-- Collect **all available official + community STLs** related to the FoldApe4
-- Document the **folding mechanism** in detail (arms fold, locked by 2 screws after unfolding, volume -70%)
-- Provide photos of every part
-- Create a simple interactive page with a button **"modèle Foldape4"** that displays the 3D pieces of the drone
-- Keep the same clean, functional style as OA35
+Inspired by the interactive build visualizer of [OA35 / TinyHoop MK1](https://equationstratos.github.io/OA35/).
 
-## Official frame
-The main carbon fiber frame is **not** open-source (proprietary DarwinFPV design).  
-Only accessory mounts are officially released as STL by DarwinFPV.
+## Current features
+- Bouton **« modèle Foldape4 »**
+- Toggle **plié / déplié** pour visualiser le mécanisme de pliage
+- Style sombre / fonctionnel proche de OA35
+- Liste des pièces (officielles + community)
 
-### Official STLs (download from DarwinFPV support page)
+## Goal (next steps)
+1. Intégrer les STL officiels (camera mounts, antenna, GoPro)
+2. Utiliser le **tracé photo** (outil de découpe comme dans OA35) pour reconstruire les plaques carbone Top / Mid / Arms à partir de photos de dessus
+3. Ajouter le vrai mécanisme d'ouverture/fermeture (articulations + vis de verrouillage)
+4. Charger les community STLs (feet, GPS mounts, buzzer...)
+
+## Official STLs
 - [O3 Camera mount right](https://cdn.shopify.com/s/files/1/0585/5841/5023/files/O3_Camera_mount_base_right.STL?v=1718694521)
 - [O3 Camera mount left](https://cdn.shopify.com/s/files/1/0585/5841/5023/files/O3_camera_mount_base_left.STL?v=1718694473)
-- O3 antenna mount, O3 GoPro mount, Analog versions (links on [support page](https://darwinfpv.com/blogs/news/darwinfpv-foldape4))
+- Autres sur [page support DarwinFPV](https://darwinfpv.com/blogs/news/darwinfpv-foldape4)
 
-## Folding mechanism (important)
-- Arms fold for pocket storage (volume reduced by ~70%)
-- Propellers stay on
-- After unfolding: lock with **two screws** so arms cannot fold during freestyle / crashes
-- High-precision metal bushings on prop clamps
+## Folding mechanism
+- Bras pliables (volume -70 %)
+- Hélices restent montées
+- Après déploiement : **2 vis de verrouillage** par bras pour empêcher le repli en crash / freestyle
+- Bushings métalliques haute précision sur les clamps d'hélices
 
-## Community STLs (examples)
-- Feet / Landing gear
-- GPS front / rear mounts (M100, BK182, etc.)
-- Buzzer holders
-- Propeller protectors
-- Antenna supports
+## Photo-tracing (comme OA35)
+L'outil OA35 permet de déposer une photo de pièce (vue de dessus, fond clair), de tracer automatiquement le contour + les perçages, et de créer une pièce 3D à l'échelle.
 
-See Thingiverse / MakerWorld / Cults search "FoldApe4" or "Foldape4".
-
-## Status
-- ✅ Repository created: https://github.com/equationstratos/Foldape4
-- ✅ Official camera mounts links collected
-- Next steps: gather more photos, community STLs list, and build the interactive "modèle Foldape4" page in the style of OA35
+On peut faire exactement la même chose ici pour les plaques carbone du Foldape4 (Top Plate, Mid Plate, Front/Back Arms) une fois qu'on a de bonnes photos.
 
 ---
 **STRATOS ROBOTICS style project**
